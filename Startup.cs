@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using todo_aspnetcore.Data;
+using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.EntityFrameworkCore;
 
 namespace todo_aspnetcore
 {
@@ -24,6 +27,8 @@ namespace todo_aspnetcore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+
+            services.AddDbContext<TodoContext> (options => options.UseSqlServer(Configuration.GetConnectionString("DB")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

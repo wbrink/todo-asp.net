@@ -1,0 +1,13 @@
+﻿@page
+@model todo_aspnetcore.Pages.TodosModel
+@{
+}
+
+<h1>This is the Todo Page</h1>
+<div>
+    <h2>@ViewData["Message"]</h2>
+</div>
+<form action="" method="POST">
+    <input type="text" asp-for="Todo.TodoString">
+    <input type="submit" >
+</form>
