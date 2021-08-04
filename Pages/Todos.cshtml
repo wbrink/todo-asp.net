@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{parameter?}"
 @model todo_aspnetcore.Pages.TodosModel
 @{
 }
@@ -6,8 +6,38 @@
 <h1>This is the Todo Page</h1>
 <div>
     <h2>@ViewData["Message"]</h2>
+
+    <h4>Query: @ViewData["Query"]</h4>
+    <h4>Paremter: @ViewData["Parameter"]</h4>
 </div>
 <form action="" method="POST">
-    <input type="text" asp-for="Todo.TodoString">
+    <input type="text" asp-for="Todo.Title" placeholder="Title">
+    <span asp-validation-for="Todo.Title"></span>
+    <input type="text" asp-for="Todo.TodoString" placeholder="Todo">        
+    <span asp-validation-for="Todo.TodoString"></span>
+
     <input type="submit" >
 </form>
+
+@if (Model.Todos == null || Model.Todos.Any()) 
+{
+    <h1>There are no todos</h1>
+}
+else 
+{
+    foreach(string todo in Model.Todos) 
+    {
+        <h4>todo</h4>
+    }
+}
+
+
+
+@section scripts {
+    @* <script>
+        $(document).ready(() => {
+            alert("hi world");
+        })
+    </script> *@
+    
+}
