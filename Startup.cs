@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using todo_aspnetcore.Data;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 namespace todo_aspnetcore
 {
@@ -27,6 +29,7 @@ namespace todo_aspnetcore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddControllers(); // this adds the ability to use asp.net core web api
 
             services.AddDbContext<TodoContext> (options => options.UseSqlServer(Configuration.GetConnectionString("DB")));
         }
@@ -55,6 +58,15 @@ namespace todo_aspnetcore
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers(); // for web api
+
+                // // not ideal way of making an api, (this is the manual way)
+                // endpoints.MapGet("/products", (context) => {
+                //     // using anonymous type by using new operator with object initializor
+                //     // 
+                //     string jsonString = JsonSerializer.Serialize(new {Title = "This is a Title", ID = 456});
+                //     return context.Response.WriteAsync(jsonString);
+                // });
             });
         }
     }

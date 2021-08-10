@@ -10,34 +10,97 @@
     <h4>Query: @ViewData["Query"]</h4>
     <h4>Paremter: @ViewData["Parameter"]</h4>
 </div>
-<form action="" method="POST">
-    <input type="text" asp-for="Todo.Title" placeholder="Title">
+<form id="createTodo">
+    <input type="text" asp-for="Todo.Title" placeholder="Title" id="title">
     <span asp-validation-for="Todo.Title"></span>
-    <input type="text" asp-for="Todo.TodoString" placeholder="Todo">        
+    <input type="text" asp-for="Todo.TodoString" placeholder="Todo" id="todo">        
     <span asp-validation-for="Todo.TodoString"></span>
 
     <input type="submit" >
 </form>
 
-@if (Model.Todos == null || Model.Todos.Any()) 
-{
-    <h1>There are no todos</h1>
-}
-else 
-{
-    foreach(string todo in Model.Todos) 
-    {
-        <h4>todo</h4>
-    }
-}
+
+<div id="message">msg from server</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Todo Title</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        
+        @if (Model.Todos == null || !Model.Todos.Any()) 
+        {
+            <tr>
+                <td>No Data</td>
+            </tr>
+        }
+        else 
+        {
+            foreach(string todo in Model.Todos) 
+            {
+                <tr>
+                    <td>@todo</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
 
 
 
 @section scripts {
-    @* <script>
-        $(document).ready(() => {
-            alert("hi world");
+    <script>
+        const form = document.querySelector("#createTodo");
+        const msg = document.querySelector("#message");
+
+        @* form.addEventListener("onSubmit", (e) => {
+            e.preventDefault();
+            console.log("form submitted to api")
+            fetch("/api/todo/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"}
+                body: JSON.stringify({
+                    Title: document.querySelector("#title").value,
+                    TodoString:  document.querySelector("#todo").value
+                })
+            }
+            .then(res => res.json())
+            .then(data => {
+                msg.textContent = data;
+            })
         })
-    </script> *@
+        })
+        JSON.stringify() *@
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log("form submitted to api")
+            
+            fetch("/api/todos/test", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    test: "this is test data"
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                msg.textContent = JSON.stringify(data);
+            })
+        })
+
+
+        const createTodo = () => {
+
+        }
+
+        
+    </script>
     
 }

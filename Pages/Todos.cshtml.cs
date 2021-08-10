@@ -54,19 +54,19 @@ namespace todo_aspnetcore.Pages
             return Page();
         }
 
+        // POST: Using api instead
+        // public async Task<IActionResult> OnPostAsync() 
+        // {
+        //     if (ModelState.IsValid)
+        //     {
+        //         db.Todos.Add(Todo);
+        //         await db.SaveChangesAsync();
+        //         return RedirectToPage("/todos"); // this page GET
+        //     } 
 
-        public async Task<IActionResult> OnPostAsync() 
-        {
-            if (ModelState.IsValid)
-            {
-                db.Todos.Add(Todo);
-                await db.SaveChangesAsync();
-                return RedirectToPage("/todos"); // this page GET
-            } 
+        //     // return RedirectToAction("OnGet");
+        //     return Page();
 
-            // return RedirectToAction("OnGet");
-            return Page();
-
-        }
+        // }
     }
 }
