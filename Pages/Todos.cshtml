@@ -3,6 +3,8 @@
 @{
 }
 
+
+
 <h1>This is the Todo Page</h1>
 <div>
     <h2>@ViewData["Message"]</h2>
@@ -25,11 +27,14 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Todo Title</th>
+            <th scope="col">Title</th>
+            <th scope="col">Todo</th>
+            <th scope="col">Created</th>
+            <th scope="col">Finished</th>
         </tr>
     </thead>
 
-    <tbody>
+    <tbody class="tbody">
         
         @if (Model.Todos == null || !Model.Todos.Any()) 
         {
@@ -39,10 +44,13 @@
         }
         else 
         {
-            foreach(string todo in Model.Todos) 
+            foreach(var todo in Model.Todos) 
             {
-                <tr>
-                    <td>@todo</td>
+                <tr data-id=@todo.ID>
+                    <td>@todo.Title</td>
+                    <td>@todo.TodoString</td>
+                    <td class="utc-time">@todo.CreatedAt</td>
+                    <td><input type="radio" class="finishedRadio" data-id=@todo.ID></td>
                 </tr>
             }
         }
@@ -55,52 +63,104 @@
 
 @section scripts {
     <script>
-        const form = document.querySelector("#createTodo");
-        const msg = document.querySelector("#message");
+        // get all the input fields
+        
+        const audio = new Audio("audio/aim_send_msg.mp3");
+        const audio2 = new Audio("audio/aim_send_msg.mp3");
+        const audio3 = new Audio("audio/aim_send_msg.mp3");
+        const audios = [audio, audio2, audio3];
+        let x = 0;
 
-        @* form.addEventListener("onSubmit", (e) => {
-            e.preventDefault();
-            console.log("form submitted to api")
-            fetch("/api/todo/", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"}
-                body: JSON.stringify({
-                    Title: document.querySelector("#title").value,
-                    TodoString:  document.querySelector("#todo").value
-                })
-            }
-            .then(res => res.json())
-            .then(data => {
-                msg.textContent = data;
+        const finishedRadioButtons = document.querySelectorAll(".finishedRadio");
+
+        finishedRadioButtons.forEach(elem => {
+            elem.addEventListener("change", (e) => {
+                console.log("clicked the finished button");
+                if (e.target.checked) {
+                    if (x === 2){
+                        x = 0;
+                    }
+                    audios[x].play();
+                    x++;
+                }
             })
         })
-        })
-        JSON.stringify() *@
+
+        
+        /// for todo form
+        const form = document.querySelector("#createTodo");
+        const msg = document.querySelector("#message");
+        const todoTitle = document.querySelector("#title");
+        const todoString = document.querySelector("#todo");
+        const tbody = document.querySelector(".tbody");
+
 
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             console.log("form submitted to api")
-            
-            fetch("/api/todos/test", {
+            fetch("/api/todos/create", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    test: "this is test data"
-                })
+                body: JSON.stringify({Title: todoTitle.value, TodoString: todoString.value})
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
-                msg.textContent = JSON.stringify(data);
+                if (data?.errors) {
+                    console.log("there was an eror");
+                }
+                else {
+                    // if the table is empty and only shows "no data" remove that
+                    if (tbody.children.length == 1 && tbody.firstElementChild.firstElementChild.textContent === "No Data") {
+                        tbody.removeChild(tbody.firstElementChild);
+                    }
+                    console.log(data);
+                    let todoRow = document.createElement("tr")
+                    // title
+                    let title = document.createElement("td")
+                    title.textContent = data.todo.title;
+
+                    let todo = document.createElement("td")
+                    todo.textContent = data.todo.todoString;
+
+                    let created = document.createElement("td");
+                    let date = new Date(data.todo.createdAt); 
+                    created.textContent = date.toLocaleString("en-us", {hour12: true, month: "2-digit", day: "2-digit", hour:"2-digit", minute: "2-digit"}); // this will conver the utc time to local time
+                    
+                    let finished = document.createElement("td");
+                    let input = document.createElement("input");
+                    input.type = "radio"
+                    input.classList.add("finsishedRadio");
+                    input.dataset.id = data.todo.id;
+
+                    
+                    finished.appendChild(input);
+
+                    todoRow.appendChild(title);
+                    todoRow.appendChild(todo);
+                    todoRow.appendChild(created);
+                    todoRow.appendChild(finished)
+
+                    tbody.appendChild(todoRow);
+
+
+                    input.addEventListener("change", (e) => {
+                        if (e.target.checked) {
+                            audio.play();
+                        }
+                    })
+
+                    anime({
+                        targets: todoRow,
+                        opacity: [0, 100],
+                        duration: 1000,
+                        translateY: [40, 0]
+                    })
+                }
             })
-        })
+        }) 
 
 
-        const createTodo = () => {
 
-        }
-
-        
     </script>
     
 }

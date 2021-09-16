@@ -22,7 +22,7 @@ namespace todo_aspnetcore.Pages
 
         public string Parameter { get; set; }
 
-        public IEnumerable<string> Todos { get; set; }
+        public IEnumerable<Todo> Todos { get; set; }
 
         private readonly TodoContext db;
 
@@ -34,18 +34,9 @@ namespace todo_aspnetcore.Pages
         }
 
 
-        // public async Task OnGetAsync(string parameter, int query)
-        // {
-        //     Query = query;
-
-        //     Parameter = parameter;
-        //     ViewData["Parameter"] = parameter;
-        //     Message = "Hello World";
-        // }
-
         public async Task<IActionResult> OnGetAsync() 
         {
-            Todos = db.Todos.Select( s => s.Title);
+            Todos = db.Todos;
             if (Todos == null) 
             {
                 return NotFound();
@@ -55,18 +46,20 @@ namespace todo_aspnetcore.Pages
         }
 
         // POST: Using api instead
-        // public async Task<IActionResult> OnPostAsync() 
-        // {
-        //     if (ModelState.IsValid)
-        //     {
-        //         db.Todos.Add(Todo);
-        //         await db.SaveChangesAsync();
-        //         return RedirectToPage("/todos"); // this page GET
-        //     } 
+        public async Task<IActionResult> OnPostAsync() 
+        {
+            if (ModelState.IsValid)
+            {
+                Todo.CreatedAt = DateTime.UtcNow;
+                Todo.UpdatedAt = DateTime.UtcNow;
+                db.Todos.Add(Todo);
+                await db.SaveChangesAsync();
+                return RedirectToPage("/todos"); // this page GET
+            } 
 
-        //     // return RedirectToAction("OnGet");
-        //     return Page();
+            // return RedirectToPage("/todos");
+            return Page();
 
-        // }
+        }
     }
 }

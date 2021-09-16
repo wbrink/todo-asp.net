@@ -30,6 +30,9 @@ namespace todo_aspnetcore
         {
             services.AddRazorPages();
             services.AddControllers(); // this adds the ability to use asp.net core web api
+                // .ConfigureApiBehaviorOptions(options => {
+                //     options.SuppressModelStateInvalidFilter = true;
+                // }); 
 
             services.AddDbContext<TodoContext> (options => options.UseSqlServer(Configuration.GetConnectionString("DB")));
         }
@@ -48,7 +51,7 @@ namespace todo_aspnetcore
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

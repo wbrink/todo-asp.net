@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Linq;
+using System;
 
 namespace todo_aspnetcore.Controllers
 {
@@ -12,7 +13,7 @@ namespace todo_aspnetcore.Controllers
     [ApiController]
     public class TodosController : ControllerBase 
     {
-
+        
         // Note: Asp.net core Web API serializes all the public properties into JSON.
         private readonly TodoContext db;
 
@@ -32,25 +33,16 @@ namespace todo_aspnetcore.Controllers
             return Todos; //automatically serialized to JSON
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> Post([FromBody] Todo Todo) 
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            return new OkObjectResult(new {title = Todo.Title, todo = Todo.TodoString});
+        {    
+            Todo.CreatedAt = DateTime.UtcNow;
+            Todo.UpdatedAt = DateTime.UtcNow;
+            db.Todos.Add(Todo);
+            await db.SaveChangesAsync();
+            return Ok(new {success = true, todo = Todo}); // this page GET   
         }
 
-        [HttpPost("test")]
-        public IActionResult Test() 
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            return Ok(new {msg = "Hello Dude"});
-        }
-
+        
     }
 } 

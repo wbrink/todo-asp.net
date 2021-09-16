@@ -16,33 +16,35 @@ namespace todo_aspnetcore.Data
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
-            BeforeSaving();
+            // BeforeSaving();
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
 
-        private void BeforeSaving()
-        {
-            var entries = ChangeTracker.Entries();
-            DateTime now = DateTime.UtcNow;
+        // private void BeforeSaving()
+        // {
+        //     var entries = ChangeTracker.Entries();
+        //     DateTime now = DateTime.UtcNow;
 
-            foreach (var entry in entries) 
-            { 
-                if (entry.Entity is ITrackable trackable)
-                {
-                    if (entry.State == EntityState.Added)
-                    {
-                        trackable.CreatedAt = now;
-                        trackable.LastUpdatedAt = now;
-                    }
+        //     foreach (var entry in entries) 
+        //     { 
+        //         if (entry.Entity is ITrackable trackable)
+        //         {
+        //             if (entry.State == EntityState.Added)
+        //             {
+        //                 Console.WriteLine("This todo just created");
+        //                 Console.WriteLine(now);
+        //                 trackable.CreatedAt = now;
+        //                 trackable.LastUpdatedAt = now;
+        //             }
 
-                    if (entry.State == EntityState.Modified) 
-                    {
-                        trackable.LastUpdatedAt = now;
-                    }
-                }
-            }
-        }
+        //             if (entry.State == EntityState.Modified) 
+        //             {
+        //                 trackable.LastUpdatedAt = now;
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
 
